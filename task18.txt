@@ -1,1 +1,91 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
+public class FacebookSignUpAutomation {
+    public static void main(String[] args) {
+        // Set the path to the WebDriver executable
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+
+        // Initialize the WebDriver
+        WebDriver driver = new ChromeDriver();
+
+        try {
+            // Open the Facebook website
+            driver.get("https://www.facebook.com/");
+
+            // Maximize the browser window
+            driver.manage().window().maximize();
+
+            // Verify that the website has been redirected to the Facebook homepage
+            String expectedTitle = "Facebook - log in or sign up";
+            String actualTitle = driver.getTitle();
+            if (actualTitle.equals(expectedTitle)) {
+                System.out.println("Redirected to Facebook homepage successfully.");
+            } else {
+                System.out.println("Failed to redirect to Facebook homepage.");
+                return;
+            }
+
+            // Click on the "Create new account" button
+            WebElement createAccountButton = driver.findElement(By.xpath("//a[@data-testid='open-registration-form-button']"));
+            createAccountButton.click();
+
+            // Wait for the registration form to appear
+            Thread.sleep(2000); // Adjust sleep time as needed
+
+            // Enter the first name as "Test" and last name as "User"
+            WebElement firstNameField = driver.findElement(By.name("firstname"));
+            firstNameField.sendKeys("Test");
+            WebElement lastNameField = driver.findElement(By.name("lastname"));
+            lastNameField.sendKeys("User");
+
+            // Enter a valid email address
+            WebElement emailField = driver.findElement(By.name("reg_email__"));
+            emailField.sendKeys("testuser@test.com");
+
+            // Re-enter the email address to confirm
+            WebElement reEnterEmailField = driver.findElement(By.name("reg_email_confirmation__"));
+            reEnterEmailField.sendKeys("testuser@test.com");
+
+            // Enter a strong password
+            WebElement passwordField = driver.findElement(By.name("reg_passwd__"));
+            passwordField.sendKeys("StrongPassword123");
+
+            // Select the date of birth
+            Select dayDropdown = new Select(driver.findElement(By.id("day")));
+            dayDropdown.selectByValue("11");
+            Select monthDropdown = new Select(driver.findElement(By.id("month")));
+            monthDropdown.selectByValue("5");
+            Select yearDropdown = new Select(driver.findElement(By.id("year")));
+            yearDropdown.selectByValue("1985");
+
+            // Select the gender as "Male" (change to "Female" if needed)
+            WebElement genderRadioButton = driver.findElement(By.xpath("//input[@value='2']"));
+            genderRadioButton.click();
+
+            // Click on the "Sign Up" button
+            WebElement signUpButton = driver.findElement(By.name("websubmit"));
+            signUpButton.click();
+
+            // Wait for the registration process to complete
+            Thread.sleep(5000); // Adjust sleep time as needed
+
+            // Verify that the user is successfully registered and redirected to the Facebook homepage
+            actualTitle = driver.getTitle();
+            if (actualTitle.contains("Facebook")) {
+                System.out.println("User successfully registered on Facebook.");
+            } else {
+                System.out.println("User registration failed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Close the browser instance
+            driver.quit();
+        }
+    }
+}
